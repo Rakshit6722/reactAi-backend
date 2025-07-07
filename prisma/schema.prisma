@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int        @id @default(autoincrement())
+  name               String
+  email              String     @unique
+  password           String?
+  googleId           String?
+  resetToken         String?
+  resetTokenExpiry   DateTime?
+  googleAccessToken  String?
+  googleRefreshToken String?
+  createdAt          DateTime   @default(now())
+  campaign           Campaign[]
+}
+
+model Token {
+  id    Int    @id @default(autoincrement())
+  token String
+}
+
+model Campaign {
+  id      Int    @id @default(autoincrement())
+  name    String
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
+  subject String
+  body    String
+
+  status CampaignStatus @default(DRAFT)
+
+  leads     Lead[]
+  emailSent EmailSent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CampaignAttachments {
+  id       Int    @id @default(autoincrement())
+  filename String
+  url      String
+
+  emailSent   EmailSent @relation(fields: [emailSentId], references: [id])
+  emailSentId Int
+}
+
+model EmailSent {
+  id Int @id @default(autoincrement())
+
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+  campaignId Int
+
+  subject       String
+  body          String
+  order         Int?
+  sendAfterDays Int?
+
+  status EmailStatus @default(PENDING)
+
+  campaignAttachments CampaignAttachments[]
+
+  leadEmailStatus LeadEmailStatus[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LeadEmailStatus {
+  id Int @id @default(autoincrement())
+
+  lead   Lead @relation(fields: [leadId], references: [id])
+  leadId Int
+
+  emailSent   EmailSent @relation(fields: [emailSentId], references: [id])
+  emailSentId Int
+
+  status EmailStatus @default(PENDING)
+  sentAt DateTime?
+
+  @@unique([leadId, emailSentId])
+}
+
+model Lead {
+  id            Int        @id @default(autoincrement())
+  email         String
+  firstName     String?
+  lastName      String?
+  company       String?    @default("NA")
+  customSubject String?
+  customBody    String?
+  shouldSend    Boolean    @default(true)
+  status        LeadStatus @default(PENDING)
+  sentAt        DateTime?
+  createdAt     DateTime   @default(now())
+
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+  campaignId Int
+
+  leadEmailStatuses LeadEmailStatus[]
+}
+
+enum LeadStatus {
+  PENDING
+  SENT
+  FAILED
+  SKIPPED
+}
+
+enum CampaignStatus {
+  DRAFT // Campaign created but not sent or scheduled
+  SCHEDULED // User scheduled send time but it hasn't started yet
+  RUNNING // Currently sending emails
+  COMPLETED // All emails sent
+  CANCELLED // Campaign stopped before completion
+  FAILED // Sending failed due to error (e.g. Gmail revoked access)
+}
+
+enum EmailStatus {
+  PENDING // Not sent yet
+  QUEUED // Ready to be sent (queued via cron/job)
+  SENT // Successfully sent
+  FAILED // Sending failed (e.g., Gmail error)
+  SKIPPED // Manually skipped or condition not met
+}
