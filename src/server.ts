@@ -12,9 +12,11 @@ import campaignRoutes from './modules/campaigns/campaign.route.ts'
 import leadRoutes from './modules/leads/lead.route.ts'
 import emailSentRoutes from './modules/emailSent/email.route.ts'
 import campaignAttachments from './modules/attachments/attachments.route.ts'
+import sendEmail from './modules/sendEmail/sendEmail.route.ts'
 import { ROUTES } from './routes/routes.ts'
 
 import { cloudinaryConnect } from './config/cloudinary.ts'
+import './utils/emailWorker.ts'
 
 const app = express()
 
@@ -44,6 +46,7 @@ app.use(ROUTES.CAMPAIGN.ROOT, campaignRoutes)
 app.use(ROUTES.LEADS.ROOT, leadRoutes)
 app.use(ROUTES.EMAILSENT.ROOT, emailSentRoutes)
 app.use(ROUTES.ATTACHMENTS.ROOT, campaignAttachments)
+app.use(ROUTES.SEND_EMAIL.ROOT, sendEmail)
 
 
 //custom error handler for all type of errors accros project

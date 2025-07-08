@@ -40,5 +40,9 @@ export const ROUTES = {
         ROOT:"/api",
         RAW_FILES_UPLOAD:"/emailAttachment/:emailSentId/raw",
         IMAGES_VIDEOS_UPLOAD:"/emailAttachment/:emailSentId/image-video",
+    },
+    SEND_EMAIL:{
+        ROOT:'/api',
+        SEND_EMAIL:'/campaigns/:campaignId/emails/:emailSentId/send'
     }
 }

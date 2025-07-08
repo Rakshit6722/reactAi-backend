@@ -7,5 +7,6 @@ export const EMAIL_RESPONSES = {
         CAMPAIGN_ID_NOT_FOUND:{message:"Unable to find campaign Id", status: 422},
         EMAILSENT_NOT_CREATED:{message:"Unable to create email", status: 400},
         EMAILS_NOT_FOUND:{message:"Unable to find any emails for this campaign", status: 400},
+        CAMPAIGN_NOT_FOUND:{message:"Unable to find any campaign with this id", status: 400},
     }
 }

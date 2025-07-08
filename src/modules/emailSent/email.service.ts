@@ -19,6 +19,16 @@ export const createEmailSentService = async (req: Request) => {
             throw new AppError(ERROR.CAMPAIGN_ID_NOT_FOUND.message, ERROR.CAMPAIGN_ID_NOT_FOUND.status)
         }
 
+        const campaign = await prisma.campaign.findUnique({
+            where:{
+                id: Number(campaignId)
+            }
+        })
+
+        if(!campaign){
+            throw new AppError(ERROR.CAMPAIGN_NOT_FOUND.message, ERROR.CAMPAIGN_NOT_FOUND.status)
+        }
+
         if (req.body.subject) {
             subject = req.body.subject
         }
