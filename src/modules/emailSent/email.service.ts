@@ -114,13 +114,9 @@ export const getCampaignsEmailService = async (req: Request) => {
             where: {
                 campaignId: Number(campaignId)
             },
-            select: {
-                id: true,
-                subject: true,
-                body: true,
-                createdAt: true,
+            include:{
                 campaignAttachments: true
-            },
+            }
         })
 
         if (!emails) {

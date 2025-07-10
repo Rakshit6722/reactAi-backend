@@ -14,4 +14,6 @@ export const config = {
     cloudinary_api_secret:process.env.CLOUDINARY_API_SECRET,
     cloudinary_cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
     cloudinary_folder_name:process.env.CLOUDINARY_FOLDER_NAME,
+    google_refresh_token_api:process.env.GOOGLE_REFRESH_TOKEN_API,
+    google_send_mail_api:process.env.GOOGLE_SEND_EMAIL_API
 }

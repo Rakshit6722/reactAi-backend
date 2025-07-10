@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Request } from "express";
 import AppError from "../../utils/AppError";
 import { SEND_EMAIL_RESPONSE } from "../../constants/sendEmail.constant";
-import { emailQueue } from "../../utils/emailQueue";
+import { emailQueue } from "../../services/emailQueue";
 
 const prisma = new PrismaClient()
 
@@ -22,6 +22,23 @@ export const sendEmailService = async (req: Request) => {
                 shouldSend: true
             }
         })
+
+
+
+        //find user in order to get useraccesstoken for send mail through google api
+        const campaign = await prisma.campaign.findUnique({
+            where: {
+                id: Number(campaignId)
+            },
+            include: {
+                user: true
+            }
+        })
+
+        const userName = campaign!.user.name
+        const userAccessToken = campaign!.user.googleAccessToken
+        const userEmail = campaign!.user.email
+        const userRefreshToken = campaign!.user.googleRefreshToken
 
         if (!leads) {
             throw new AppError(ERROR.LEAD_NOT_FOUND.message, ERROR.LEAD_NOT_FOUND.status)
@@ -45,7 +62,9 @@ export const sendEmailService = async (req: Request) => {
             await emailQueue.add("send-to-lead", {
                 lead,
                 emailSent,
-                campaignId
+                userName,
+                userEmail,
+                userRefreshToken
             })
         }
 

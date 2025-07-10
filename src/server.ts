@@ -16,7 +16,7 @@ import sendEmail from './modules/sendEmail/sendEmail.route.ts'
 import { ROUTES } from './routes/routes.ts'
 
 import { cloudinaryConnect } from './config/cloudinary.ts'
-import './utils/emailWorker.ts'
+import './workers/emailWorker.ts'
 
 const app = express()
 

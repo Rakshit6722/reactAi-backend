@@ -14,6 +14,8 @@ export const createAttachmentService = async (req: Request) => {
     try {
         const { file } = req;
 
+        console.log("file", file)
+
         const { emailSentId } = req.params
 
         if (!file) {
@@ -51,7 +53,7 @@ export const createAttachmentService = async (req: Request) => {
             data:{
                  filename: (file as Express.Multer.File).originalname,
                  url: upload.secure_url,
-                 emailSentId: Number(emailSentId)
+                 emailSentId: Number(emailSentId),
             }
         })
 
