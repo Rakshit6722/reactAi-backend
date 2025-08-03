@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { createEmailSentService, getCampaignsEmailService } from "./email.service";
+import { createEmailSentService, deleteEmailService, getCampaignsEmailService } from "./email.service";
 import { EMAIL_RESPONSES } from "../../constants/emailSent.constant";
 import { success } from "zod/v4";
 import { emailSentSchema } from "./email.validator";
@@ -34,5 +34,17 @@ export const getCampaignEmails = async (req: Request, res: Response, next: NextF
 
     }catch(Err){
         next(Err)
+    }
+}
+
+export const deleteEmailSent = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const deletedEmail = await deleteEmailService(req)
+        res.status(SUCCESS.EMAILSENT_DELETE.status).json({
+            success: true,
+            message: SUCCESS.EMAILSENT_DELETE.message
+        })
+    }catch(err){
+        next(err)
     }
 }

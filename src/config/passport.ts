@@ -21,7 +21,17 @@ passport.use(
                 })
 
                 if (existingUser) {
-                    return done(null, existingUser)
+                    await prisma.user.update({
+                        where: { email: profile.emails?.[0].value },
+                        data: {
+                            googleAccessToken: accessToken,
+                            googleRefreshToken: refreshToken
+                        }
+                    });
+                    const updatedUser = await prisma.user.findUnique({
+                        where: { email: profile.emails?.[0].value }
+                    });
+                    return done(null, updatedUser ?? undefined);
                 }
 
                 const newUser = await prisma.user.create({

@@ -59,7 +59,8 @@ export const getCampaignService = async (req: Request) => {
                 userId: (req.user as jwt).id
             },
             include: {
-                leads: true
+                leads: true,
+                emailSent: true
             }
         })
 

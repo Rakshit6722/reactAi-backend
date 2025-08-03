@@ -30,6 +30,7 @@ export async function refreshAccessToken(refreshToken: string) {
         }
 
     } catch (err) {
-        throw new AppError("Failed to refresh access token", 400)
+        // console.log("Error from refresh access token", err, err.message)
+        throw new AppError("Failed to refresh access token", 400, err.message)
     }
 }

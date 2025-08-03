@@ -127,3 +127,65 @@ export const getCampaignsEmailService = async (req: Request) => {
         throw err
     }
 }
+
+export  const deleteEmailService = async (req: Request) => {
+    try{
+        const {campaignId, emailSentId} = req.params
+
+        if(!campaignId){
+            throw new AppError(ERROR.CAMPAIGN_ID_NOT_FOUND.message, ERROR.CAMPAIGN_ID_NOT_FOUND.status)
+        }
+
+        if(!emailSentId){
+            throw new AppError(ERROR.EMAILSENTID_NOT_PRESESNT.message, ERROR.EMAILSENTID_NOT_PRESESNT.status)
+        }
+
+        const emailSent = await prisma.emailSent.findFirst({
+            where:{
+                id: Number(emailSentId)
+            }
+        })
+
+        if(!emailSent){
+            throw new AppError(ERROR.EMAIL_NOT_FOUND.message, ERROR.EMAILS_NOT_FOUND.status)
+        }
+
+        const campaign = await prisma.campaign.findFirst({
+            where:{
+                id: Number(campaignId)
+            }
+        })
+
+        if(!campaign){
+            throw new AppError(ERROR.CAMPAIGN_NOT_FOUND.message, ERROR.CAMPAIGN_NOT_FOUND.status)
+        }
+
+        const deleteEmailAttachments = await prisma.campaignAttachments.deleteMany({
+            where:{
+                emailSentId: Number(emailSentId)
+            }
+        })
+
+        const deleteLeadEmailStatus = await prisma.leadEmailStatus.deleteMany({
+            where:{
+                emailSentId: Number(emailSentId)
+            }
+        }) 
+
+        const deleteEmailSent = await prisma.emailSent.delete({
+            where:{
+                campaignId: Number(campaignId),
+                id: Number(emailSentId)
+            }
+        })
+
+        if(!deleteEmailSent){
+            throw new AppError(ERROR.EMAILSENT_DELETE.message, ERROR.EMAILSENT_DELETE.status)
+        }
+
+        return deleteEmailSent
+
+    }catch(err) {
+        throw err
+    }
+}

@@ -8,6 +8,8 @@ import mime from 'mime-types'
 const sendEmailToLead = async (job: Job) => {
     const { lead, emailSent, userName, userEmail, userRefreshToken } = job.data
 
+    console.log("refresh token", userRefreshToken)
+
     const { accessToken } = await refreshAccessToken(userRefreshToken)
 
     console.log("attachments", Array.isArray(emailSent.campaignAttachments))

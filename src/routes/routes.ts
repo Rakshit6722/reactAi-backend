@@ -35,6 +35,7 @@ export const ROUTES = {
         ROOT:"/api",
         CREATE_EMAIL:"/campaign/:campaignId/create-email",
         GET_CAMPAIGN_EAIL:"/campaign/:campaignId/get-email",
+        DELETE_EMAIL: '/campaign/:campaignId/delete-email/:emailSentId'
     },
     ATTACHMENTS:{
         ROOT:"/api",
